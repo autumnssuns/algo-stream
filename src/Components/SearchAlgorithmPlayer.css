@@ -1,0 +1,12 @@
+.pseudocode-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    white-space: pre;
+}
+
+.labels-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}

@@ -1,7 +1,5 @@
-import { ComparableNumber } from "../Models/DataTypes";
-
 interface ArrayVisualiserProps {
-  array: ComparableNumber[];
+  array: number[];
   pointers?: { index: number; color: string }[];
 }
 
@@ -50,7 +48,7 @@ const ArrayVisualiser: React.FC<ArrayVisualiserProps> = ({
                 }}
               ></div>
             )}
-            {num.value}
+            {num}
           </div>
         );
       })}

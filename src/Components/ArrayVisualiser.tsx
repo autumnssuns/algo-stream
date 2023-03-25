@@ -1,57 +1,123 @@
+import { CSSProperties, useEffect, useRef, useState } from "react";
+import "./ArrayVisualiser.css";
+
 interface ArrayVisualiserProps {
   array: number[];
   pointers?: { index: number; color: string }[];
+  displayMode?: "boxes" | "bars";
 }
 
 const ArrayVisualiser: React.FC<ArrayVisualiserProps> = ({
   array,
   pointers,
+  displayMode = "boxes",
 }) => {
-  return (
-    <div style={{ display: 'flex', position: 'relative' }}>
-      {array.map((num, index) => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+    // Get the window width
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  window.onresize = () => {
+    setWindowWidth(window.innerWidth);
+  };
+  useEffect(() => {
+    if (displayMode === "bars") {
+      const canvas = canvasRef.current;
+      if (!canvas) {
+        return;
+      }
+
+      const ctx = canvas.getContext("2d");
+      if (!ctx) {
+        return;
+      }
+    // Clear the canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const [min, max] = [Math.min(...array), Math.max(...array)];
+      const unitHeight = 300 / (max - min);
+      const barWidth = canvas.width / array.length;
+
+      array.forEach((num, index) => {
+        // Calculate color of bar, based on the number using hsl
+        // from green (min) to red (max)
+        const color = `hsl(${120 - (num - min) / (max - min) * 120}, 100%, 50%)`;
+
+        const barHeight = num * unitHeight;
+        const x = index * barWidth;
+        const y = canvas.height - barHeight - 10;
+
+        
+        // Draw the pointers as
+        // two triangles, one on top of the bar, and one on the bottom
+        // of the bar. The top triangle points down, and the bottom
+        // triangle points up.
+        // Size: 10px
         const pointer = pointers?.find((p) => p.index === index);
-        return (
-          <div
-            key={index}
-            style={{
-              width: '50px',
-              height: '50px',
-              border: '1px solid black',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              fontSize: '20px',
-              fontWeight: 'bold',
-              margin: '10px',
-              position: 'relative',
-            }}
-          >
-            {pointer && (
+        if (pointer) {
+          ctx.fillStyle = pointer.color;
+          // Inverted triangle on top
+          ctx.beginPath();
+          ctx.moveTo(x + barWidth / 2 - 10, y - 10);
+          ctx.lineTo(x + barWidth / 2 + 10, y - 10);
+          ctx.lineTo(x + barWidth / 2 , y);
+          ctx.fill();
+
+          // Normal triangle on bottom
+          ctx.beginPath();
+          ctx.moveTo(x + barWidth / 2 - 10, y + barHeight + 10);
+          ctx.lineTo(x + barWidth / 2 + 10, y + barHeight + 10);
+          ctx.lineTo(x + barWidth / 2 , y + barHeight);
+          ctx.fill();
+        }
+
+        ctx.fillStyle = color;
+        ctx.fillRect(x, y, barWidth, barHeight);
+      });
+    }
+  }, [array, pointers, windowWidth, displayMode]);
+
+  return (
+    <div style={{ position: "relative" }}
+    >
+      <canvas
+        ref={canvasRef}
+        width={windowWidth}
+        height={320}
+        style={{ display: displayMode === "bars" ? "block" : "none" }}
+      />
+      <div
+        style={{
+          display: displayMode === "boxes" ? "flex" : "none",
+          position: "relative",
+          alignItems: "flex-end",
+          overflowX: "scroll",
+        }}
+        ref={containerRef}
+      >
+        {array.map((num, index) => {
+          const pointer = pointers?.find((p) => p.index === index);
+          const arrowClass = pointer ? "arrow" : "";
+          let arrowStyle: CSSProperties = {};
+          if (arrowClass) {
+            arrowStyle = {
+              "--arrow-color": pointer?.color,
+            } as CSSProperties;
+          }
+
+          if (displayMode === "boxes") {
+            return (
               <div
-                style={{
-                  position: 'absolute',
-                  top: '75px',
-                  left: '50%',
-                  transform: 'translateX(-75%)',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  width: '20px',
-                  height: '20px',
-                  // backgroundColor: pointer.color,
-                  borderLeft: `5px solid ${pointer.color}`,
-                  borderTop: `5px solid ${pointer.color}`,
-                  borderBottom: `0`,
-                  borderRight: `0`,
-                  rotate: '45deg',
-                }}
-              ></div>
-            )}
-            {num}
-          </div>
-        );
-      })}
+                className={"array-element " + arrowClass}
+                style={arrowStyle}
+                key={index}
+              >
+                {num}
+              </div>
+            );
+          } else {
+            return null;
+          }
+        })}
+      </div>
     </div>
   );
 };

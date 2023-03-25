@@ -18,7 +18,7 @@ export function useSearchEngine<T>(type: string, compare: (a: T, b: T) => number
             engine = new BinarySearchEngine<T>(tracker, compare);
             cursorColorMap.set("low", "red");
             cursorColorMap.set("high", "blue");
-            cursorColorMap.set("mid", "green");
+            cursorColorMap.set("mid", "purple");
             break;
         case "sequential":
             tracker = new Tracker<SequentialSearchSnapshot<T>>();
@@ -31,7 +31,6 @@ export function useSearchEngine<T>(type: string, compare: (a: T, b: T) => number
             cursorColorMap.set("index", "red");
             break;
         }
-    console.log(engine.pseudocode)
     return { engine, tracker, cursorColorMap};
 }
 

@@ -90,6 +90,8 @@ const ArrayVisualiser: React.FC<ArrayVisualiserProps> = ({
           position: "relative",
           alignItems: "flex-end",
           overflowX: "scroll",
+          flexWrap: "wrap",
+          paddingTop: "15px"
         }}
         ref={containerRef}
       >
@@ -104,6 +106,7 @@ const ArrayVisualiser: React.FC<ArrayVisualiserProps> = ({
           }
 
           if (displayMode === "boxes") {
+            arrowStyle["fontSize"] = Math.max(Math.min(120, 700 / array.length), 9) + "px";
             return (
               <div
                 className={"array-element " + arrowClass}

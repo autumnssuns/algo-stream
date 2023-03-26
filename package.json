@@ -1,6 +1,7 @@
 {
   "name": "algorithms-visualisation",
   "version": "0.1.0",
+  "homepage": "https://autumnssuns.github.io/algo-stream/",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",

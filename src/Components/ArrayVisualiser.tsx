@@ -33,7 +33,7 @@ const ArrayVisualiser: React.FC<ArrayVisualiserProps> = ({
     // Clear the canvas
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       const [min, max] = [Math.min(...array), Math.max(...array)];
-      const unitHeight = 300 / (max - min);
+      const unitHeight = (canvas.height * 0.8) / (max - min);
       const barWidth = canvas.width / array.length;
 
       array.forEach((num, index) => {
@@ -81,7 +81,7 @@ const ArrayVisualiser: React.FC<ArrayVisualiserProps> = ({
       <canvas
         ref={canvasRef}
         width={windowWidth}
-        height={320}
+        height={370}
         style={{ display: displayMode === "bars" ? "block" : "none" }}
       />
       <div
@@ -89,9 +89,8 @@ const ArrayVisualiser: React.FC<ArrayVisualiserProps> = ({
           display: displayMode === "boxes" ? "flex" : "none",
           position: "relative",
           alignItems: "flex-end",
-          overflowX: "scroll",
           flexWrap: "wrap",
-          paddingTop: "15px"
+          padding: "15px 0"
         }}
         ref={containerRef}
       >

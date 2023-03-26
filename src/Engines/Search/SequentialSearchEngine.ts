@@ -1,27 +1,28 @@
-import { Tracker } from "../Models/Utils";
+import { Tracker } from "../../Models/Utils";
+import { Pointers, Snapshot } from "../AlgorithmEngine";
 import { SearchEngine } from "./SearchEngine";
 
-export class SequentialSearchSnapshot<T> {
+export class SequentialSearchSnapshot<T> implements Snapshot<T> {
     constructor(
         // public array: T[], 
         public value: T, 
-        public index: number, 
+        public pointers: Pointers, 
         public label: string,
         public algorithmLine: number
         ) { }
 }
 
-export class SequentialSearchEngine<T> implements SearchEngine<T> {
-    constructor(
-        public tracker: Tracker<SequentialSearchSnapshot<T>>, 
-        public compare: (a: T, b: T) => number) { }
+export class SequentialSearchEngine<T> extends SearchEngine<T> {
+    constructor(tracker: Tracker<any>, compare: (a: T, b: T) => number) {
+        super(tracker, compare);
+    }
 
     search(array: T[], value: T): number {
-        this.tracker.record(new SequentialSearchSnapshot(value, -1, `Algorithm starts`, 0));
-        let i: number;
+        let i: number = -1;
         const quickAddRecord = (label: string, algorithmLine: number) => {
-            this.tracker.record(new SequentialSearchSnapshot(value, i, label, algorithmLine));
+            this.tracker.record(new SequentialSearchSnapshot(value, {index: i}, label, algorithmLine));
         }
+        quickAddRecord(`Algorithm starts`, 0)
         for (i = 0; i < array.length; i++) {
             quickAddRecord(`Let current index i = ${i}`, 1);
             quickAddRecord(`Check if ${array[i]} = ${value}`, 2);

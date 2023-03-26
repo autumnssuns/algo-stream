@@ -1,12 +1,11 @@
 import React, { useEffect, useRef } from "react";
 import "./AlgorithmPlayer.css";
-import { createSearchEngine } from "../Hooks/factories";
+import { createSortEngine } from "../Hooks/factories";
 import { useLinearPlayer } from "../Hooks/useLinearPlayer";
 
 interface SearchAlgorithmPlayerProps {
     array: number[];
     compare: (a: number, b: number) => number;
-    searchKey: number;
     type: string;
     displayMode: 'boxes' | 'bars'
 }
@@ -14,11 +13,10 @@ interface SearchAlgorithmPlayerProps {
 const SearchAlgorithmPlayer: React.FC<SearchAlgorithmPlayerProps> = ({
     array,
     compare,
-    searchKey,
     type,
     displayMode
 }) => {
-    const factory = () => createSearchEngine(type, compare);
+    const factory = () => createSortEngine(type, compare);
 
     const {setSliderValue, 
         setArrayState, 
@@ -31,13 +29,13 @@ const SearchAlgorithmPlayer: React.FC<SearchAlgorithmPlayerProps> = ({
     useEffect(() => {
         setSliderValue(0);
         setArrayState(array);
-        const { engine, tracker } = createSearchEngine(type, compare);
+        const { engine, tracker } = createSortEngine(type, compare);
 
         setTrackerState(tracker);
-        engine.run(array, searchKey);
+        engine.run([...array]);
         setMaxSliderValue(tracker.size - 1);
         setPseudocodeState(engine.pseudocode);
-    }, [array, searchKey, type]);
+    }, [array, type]);
 
     return jsx;
 };

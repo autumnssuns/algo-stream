@@ -1,23 +1,21 @@
-import { Tracker } from "../Models/Utils";
+import { Tracker } from "../../Models/Utils";
+import { Pointers, Snapshot } from "../AlgorithmEngine";
 import { SearchEngine } from "./SearchEngine";
 
-export class BinarySearchSnapshot<T> {
+export class BinarySearchSnapshot<T> implements Snapshot<T> {
     constructor(
         // public array: T[],
         public value: T,
-        public low: number,
-        public high: number,
-        public mid: number | null,
+        public pointers: Pointers,
         public label: string,
         public algorithmLine: number
         ) { }
 }
 
-export class BinarySearchEngine<T> implements SearchEngine<T> {
-    constructor(
-        public tracker: Tracker<BinarySearchSnapshot<T>>,
-        public compare: (a: T, b: T) => number
-        ) { }
+export class BinarySearchEngine<T> extends SearchEngine<T> {
+    constructor(tracker: Tracker<Snapshot<T>>, compare: (a: T, b: T) => number) {
+        super(tracker, compare);
+    }
     // use mathematical style of pseudocode
     public get pseudocode(): string {
         return `algorithm binarySearch(array, value)
@@ -39,7 +37,7 @@ export class BinarySearchEngine<T> implements SearchEngine<T> {
         let high = -1;
         let mid = -1;
         const quickAddRecord = (label: string, algorithmLine: number) => {
-            this.tracker.record(new BinarySearchSnapshot(value, low, high, mid, label, algorithmLine));
+            this.tracker.record(new BinarySearchSnapshot(value, {low: low, high: high, mid: mid}, label, algorithmLine));
         }
         quickAddRecord(`Algorithm starts`, 0);
         low = 0;

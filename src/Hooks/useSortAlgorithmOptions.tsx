@@ -7,9 +7,9 @@ export function useSortAlgorithmOptions() {
       <div className='input-type-container'>
           <label>Algorithm</label>
           <select onChange={(e) => setType(e.target.value as any)}>
-            <option value="bubble">Bubble Sort</option>
-            <option value="selection">Selection Sort</option>
             <option value="insertion">Insertion Sort</option>
+            <option value="selection">Selection Sort</option>
+            <option value="bubble">Bubble Sort</option>
           </select>
         </div>
       </div>)

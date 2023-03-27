@@ -18,40 +18,34 @@ export class BubbleSortEngine<T> extends SortEngine<T> {
     }
 
     sort(array: T[]): void {
-        let swapped: boolean = false;
         const quickAddRecord = (label: string, algorithmLine: number, current: number, next: number) => {
             this.tracker.record(new BubbleSortSnapshot([...array], {current: current, next: next}, label, algorithmLine));
         }
+        // double for loop
         quickAddRecord(`Algorithm starts`, 0, -1, -1);
-        do {
-            quickAddRecord(`Set swapped to false`, 2, -1, -1);
-            swapped = false;
-            for (let i = 0; i < array.length - 1; i++) {
-                quickAddRecord(`Let current index i = ${i}`, 3, i, i + 1);
-                quickAddRecord(`Check if ${array[i]} > ${array[i + 1]}`, 4, i, i + 1);
-                if (this.compare(array[i], array[i + 1]) > 0) {
-                    quickAddRecord(`True. Swap ${array[i]} and ${array[i + 1]}`, 5, i, i + 1);
-                    [array[i], array[i + 1]] = [array[i + 1], array[i]];
-                    quickAddRecord(`Set swapped to true`, 6, i + 1, i);
-                    swapped = true;
+        for (let i = 0; i < array.length - 1; i++) {
+            quickAddRecord(`Let current index i = ${i}`, 1, -1, -1);
+            for (let j = 0; j < array.length - i - 1; j++) {
+                quickAddRecord(`Let current index j = ${j}`, 2, j, j + 1);
+                quickAddRecord(`Check if ${array[j]} > ${array[j + 1]}`, 3, j, j + 1);
+                if (this.compare(array[j], array[j + 1]) > 0) {
+                    [array[j], array[j + 1]] = [array[j + 1], array[j]];
+                    quickAddRecord(`True. Swap ${array[j]} and ${array[j + 1]}`, 4, j + 1, j);
+                } else {
+                    quickAddRecord(`False. Continue`, 3, j, j + 1);
                 }
-                quickAddRecord(`Continue to next iteration`, 3, i, i + 1);
             }
-            quickAddRecord(`Swapped = ${swapped}. ${swapped ? 'Continue' : 'End'}`, 1, -1, -1);
-        } while (swapped);
-        quickAddRecord(`Algorithm ends`, 8, -1, -1);
+        }
+        quickAddRecord(`Algorithm ends`, 5, 0, 0);
         this.tracker.isComplete = true;
     }
 
     public get pseudocode(): string {
         return `algorithm bubbleSort(array)
-    do
-        swapped = false
-        for i <- 0 to n - 2 do
-            if array[i] > array[i + 1] then
-                swap(array[i], array[i + 1])
-                swapped = true
-    while swapped
+    for i <- 0 to n - 2 do
+        for j <- 0 to n - 2 - i do
+            if array[j] > array[j + 1] then
+                swap array[j] and array[j + 1]
     return`;
     }
 }

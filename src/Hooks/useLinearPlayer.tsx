@@ -6,7 +6,7 @@ import { Tracker } from "../Models/Utils";
 
 export function useLinearPlayer(
     array: number[], 
-    displayMode: "boxes" | "bars",
+    displayMode: "bars" | "boxes",
     factory: () => {
         engine: LinearEngine<number>, 
         tracker: Tracker<Snapshot<number>>, 

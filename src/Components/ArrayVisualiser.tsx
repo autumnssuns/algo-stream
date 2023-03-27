@@ -4,13 +4,13 @@ import "./ArrayVisualiser.css";
 interface ArrayVisualiserProps {
   array: number[];
   pointers?: { index: number; color: string }[];
-  displayMode?: "boxes" | "bars";
+  displayMode?: "bars" | "boxes";
 }
 
 const ArrayVisualiser: React.FC<ArrayVisualiserProps> = ({
   array,
   pointers,
-  displayMode = "boxes",
+  displayMode = "bars",
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -33,15 +33,15 @@ const ArrayVisualiser: React.FC<ArrayVisualiserProps> = ({
     // Clear the canvas
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       const [min, max] = [Math.min(...array), Math.max(...array)];
-      const unitHeight = (canvas.height * 0.8) / (max - min);
+      const unitHeight = (canvas.height) / (max - min + 1);
       const barWidth = canvas.width / array.length;
 
       array.forEach((num, index) => {
         // Calculate color of bar, based on the number using hsl
         // from green (min) to red (max)
-        const color = `hsl(${120 - (num - min) / (max - min) * 120}, 100%, 50%)`;
+        const color = `hsl(${120 - (num - min) / (max - min + 1) * 120}, 100%, 50%)`;
 
-        const barHeight = num * unitHeight;
+        const barHeight = num * unitHeight - 20;
         const x = index * barWidth;
         const y = canvas.height - barHeight - 10;
 

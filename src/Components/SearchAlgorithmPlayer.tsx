@@ -8,7 +8,7 @@ interface SearchAlgorithmPlayerProps {
     compare: (a: number, b: number) => number;
     searchKey: number;
     type: string;
-    displayMode: 'boxes' | 'bars'
+    displayMode: 'bars' | 'boxes' 
 }
 
 const SearchAlgorithmPlayer: React.FC<SearchAlgorithmPlayerProps> = ({

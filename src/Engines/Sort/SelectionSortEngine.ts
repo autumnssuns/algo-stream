@@ -24,7 +24,7 @@ export class SelectionSortEngine<T> extends SortEngine<T> {
             this.tracker.record(new SelectionSortSnapshot([...array], {min: minIndex, position: i, index: j}, label, algorithmLine));
         }
         quickAddRecord(`Algorithm starts`, 0);
-        for (i = 0; i < array.length; i++) {
+        for (i = 0; i < array.length - 1; i++) {
             quickAddRecord(`Let current index i = ${i}`, 1);
             minIndex = i;
             quickAddRecord(`Let minIndex = ${minIndex}`, 2);
@@ -49,7 +49,7 @@ export class SelectionSortEngine<T> extends SortEngine<T> {
 
     public get pseudocode(): string {
         return `algorithm selectionSort(array)
-    for i <- 0 to n - 1 do
+    for i <- 0 to n - 2 do
         minIndex <- i
         for j <- i + 1 to n - 1 do
             if array[j] < array[minIndex] then

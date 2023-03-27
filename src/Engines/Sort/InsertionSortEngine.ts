@@ -36,11 +36,10 @@ export class InsertionSortEngine<T> extends SortEngine<T> {
             quickAddRecord(`Let j = ${j}`, 3);
             quickAddRecord(`Check if j = ${j} >= 0 and array[j] > key? (${array[j]} > ${key})`, 4);
             while (j >= 0 && this.compare(array[j], key) > 0) {
+                quickAddRecord(`True. Shift ${array[j]} to the right`, 5);
                 array[j + 1] = array[j];
                 j = j - 1;
-                quickAddRecord(`Shift ${array[j]} to the right`, 5);
                 quickAddRecord(`Let j = ${j}`, 6);
-                quickAddRecord(`Check if ${array[j]} > ${key}`, 4);
             }
             array[j + 1] = key;
             j++;

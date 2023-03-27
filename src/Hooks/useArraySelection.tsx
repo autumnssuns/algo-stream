@@ -2,7 +2,7 @@ import { useState } from "react";
 
 export function useArraySelection(){
     let [array, setArray] = useState<any[]>([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
-    let [displayMode, setDisplayMode] = useState<'boxes' | 'bars'>('boxes');
+    let [displayMode, setDisplayMode] = useState<'boxes' | 'bars'>('bars');
     let [showButtons, setShowButtons] = useState(false);
     let compare = (a: any, b: any) => {
       if (a < b) {
@@ -43,7 +43,7 @@ export function useArraySelection(){
           setArray(prev => {
             let arr = [];
             for (let i = 0; i < arraySize; i++) {
-              arr.push(Math.floor(Math.random() * 1000));
+              arr.push(Math.floor(Math.random() * arraySize * 2));
             }
             return arr;
           });
@@ -67,8 +67,8 @@ export function useArraySelection(){
     <div className='array-mode-container'>
           <label>Display Mode</label>
           <select onChange={(e) => setDisplayMode(e.target.value as any)}>
-            <option value="boxes">Boxes</option>
             <option value="bars">Bars</option>
+            <option value="boxes">Boxes</option>
           </select>
         </div>
         <div className='input-array-container'>

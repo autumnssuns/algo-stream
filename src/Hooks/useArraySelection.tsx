@@ -14,6 +14,18 @@ export function useArraySelection(){
       }
     }
 
+    const arrayInboxChangeHandler = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
+      setArray(prev => {
+        console.log(prev)
+        // Should do nothing if previous array is the same as the new array
+        if (prev.map((item) => item.toString().trim()).join(',') === e.target.value) {
+          return prev;
+        }
+        let arr = e.target.value.split(',').map((item) => item.trim());
+        return arr;
+      });
+    }
+
     let [arraySize, setArraySize] = useState(10);
     // 3 buttons to generate array
     // 1. Generate random button, and size numeric input
@@ -23,14 +35,7 @@ export function useArraySelection(){
         <textarea
           style={{width: '300px', height: '200px'}}
           value={array.join(',')}
-          onChange={(e) => setArray(prev => {
-            // Should do nothing if previous array is the same as the new array
-            if (prev.join(',') === e.target.value) {
-              return prev;
-            }
-            let arr = e.target.value.split(',');
-            return arr;
-          })} 
+          onChange={arrayInboxChangeHandler} 
         />
         <div>
         <label>Size</label>
@@ -75,14 +80,7 @@ export function useArraySelection(){
           <label>Array</label>
           <input type="text" 
             value={array.join(',')}
-            onChange={(e) => setArray(prev => {
-              // Should do nothing if previous array is the same as the new array
-              if (prev.join(',') === e.target.value) {
-                return prev;
-              }
-              let arr = e.target.value.split(',');
-              return arr;
-            })} 
+            onChange={arrayInboxChangeHandler} 
           />
           <button onClick={() => setShowButtons(prev => !prev)}>Generate</button>
           {showButtons ? generateButtonGroups() : null}

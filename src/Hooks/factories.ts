@@ -25,9 +25,11 @@ export function createSearchEngine<T>(type: string, compare: (a: T, b: T) => num
             cursorColorMap.set("index", "red");
             break;
         default:
-            tracker = new Tracker<SequentialSearchSnapshot<T>>();
-            engine = new SequentialSearchEngine<T>(tracker, compare);
-            cursorColorMap.set("index", "red");
+            tracker = new Tracker<BinarySearchSnapshot<T>>();
+            engine = new BinarySearchEngine<T>(tracker, compare);
+            cursorColorMap.set("low", "red");
+            cursorColorMap.set("high", "blue");
+            cursorColorMap.set("mid", "purple");
             break;
         }
     return { engine, tracker, cursorColorMap};
@@ -59,10 +61,11 @@ export function createSortEngine<T>(type: string, compare: (a: T, b: T) => numbe
             cursorColorMap.set("key", "black");
             break;
         default:
-            tracker = new Tracker<BubbleSortSnapshot<T>>();
-            engine = new BubbleSortEngine<T>(tracker, compare);
-            cursorColorMap.set("current", "red");
-            cursorColorMap.set("next", "blue");
+            tracker = new Tracker<InsertionSortSnapshot<T>>();
+            engine = new InsertionSortEngine<T>(tracker, compare);
+            cursorColorMap.set("index", "red");
+            cursorColorMap.set("insert", "blue");
+            cursorColorMap.set("key", "black");
             break;
         }
     return { engine, tracker, cursorColorMap};

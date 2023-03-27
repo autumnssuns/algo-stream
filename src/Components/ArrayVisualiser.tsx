@@ -45,7 +45,6 @@ const ArrayVisualiser: React.FC<ArrayVisualiserProps> = ({
         const x = index * barWidth;
         const y = canvas.height - barHeight - 10;
 
-        
         // Draw the pointers as
         // two triangles, one on top of the bar, and one on the bottom
         // of the bar. The top triangle points down, and the bottom

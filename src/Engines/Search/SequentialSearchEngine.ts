@@ -7,6 +7,7 @@ export class SequentialSearchSnapshot<T> implements Snapshot<T> {
         // public array: T[], 
         public value: T, 
         public pointers: Pointers, 
+        public extra: null,
         public label: string,
         public algorithmLine: number
         ) { }
@@ -20,7 +21,7 @@ export class SequentialSearchEngine<T> extends SearchEngine<T> {
     search(array: T[], value: T): number {
         let i: number = -1;
         const quickAddRecord = (label: string, algorithmLine: number) => {
-            this.tracker.record(new SequentialSearchSnapshot(value, {index: i}, label, algorithmLine));
+            this.tracker.record(new SequentialSearchSnapshot(value, {index: i}, null, label, algorithmLine));
         }
         quickAddRecord(`Algorithm starts`, 0)
         for (i = 0; i < array.length; i++) {

@@ -39,7 +39,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  height: 300px;
+  height: 200px;
   width: 50%;
   overflow-y: scroll;
   resize: both;
@@ -57,5 +57,24 @@
 .keyword {
   font-weight: bold;
 }
-  
+
+.extra-space-container {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.extra-space-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* Fancy border */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  /* Fancy background */
+  background-color: #f8f8f8;
+  margin: 0px 10px;
+}
+
   

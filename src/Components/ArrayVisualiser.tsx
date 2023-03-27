@@ -4,24 +4,41 @@ import "./ArrayVisualiser.css";
 interface ArrayVisualiserProps {
   array: number[];
   pointers?: { index: number; color: string }[];
+  windowWidth?: number;
   displayMode?: "bars" | "boxes";
+  overrideMinMax?: [number, number];
+  overrideWidth?: number;
 }
 
 const ArrayVisualiser: React.FC<ArrayVisualiserProps> = ({
   array,
   pointers,
+  windowWidth,
   displayMode = "bars",
+  overrideMinMax = null,
+  overrideWidth = null,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-    // Get the window width
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  window.onresize = () => {
-    setWindowWidth(window.innerWidth);
+  const [canvasWidth, setCanvasWidth] = useState(windowWidth);
+
+  const scrollbarVisible = () => {
+    const scrollable = document.documentElement.scrollHeight > document.documentElement.clientHeight; 
+    return scrollable;
   };
+
+  useEffect(() => {
+    const element = containerRef.current;
+    const computedStyle = window.getComputedStyle(element as Element);
+    const padding = parseInt(computedStyle.paddingLeft) + parseInt(computedStyle.paddingRight);
+    const maxWidth = (containerRef.current?.clientWidth ?? 0) - padding;
+    setCanvasWidth(maxWidth)
+  }, [windowWidth, scrollbarVisible()]);
+
   useEffect(() => {
     if (displayMode === "bars") {
       const canvas = canvasRef.current;
+      
       if (!canvas) {
         return;
       }
@@ -32,9 +49,14 @@ const ArrayVisualiser: React.FC<ArrayVisualiserProps> = ({
       }
     // Clear the canvas
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const [min, max] = [Math.min(...array), Math.max(...array)];
-      const unitHeight = (canvas.height) / (max - min + 1);
-      const barWidth = canvas.width / array.length;
+      let min: number, max: number;
+      if (overrideMinMax) {
+        [min, max] = overrideMinMax;
+      } else {
+        [min, max] = [Math.min(...array), Math.max(...array)];
+      }
+      const unitHeight = (canvas.height - 20) / (max - min + 1);
+      const barWidth = overrideWidth ?? canvas.width / array.length;
 
       array.forEach((num, index) => {
         // Calculate color of bar, based on the number using hsl
@@ -72,26 +94,24 @@ const ArrayVisualiser: React.FC<ArrayVisualiserProps> = ({
         ctx.fillRect(x, y, barWidth, barHeight);
       });
     }
-  }, [array, pointers, windowWidth, displayMode]);
+  }, [array, pointers, canvasWidth, displayMode]);
 
   return (
-    <div style={{ position: "relative" }}
+    <div
+    className="array-visualiser-container"
+    ref={containerRef}
     >
       <canvas
         ref={canvasRef}
-        width={windowWidth}
+        width={canvasWidth}
         height={370}
-        style={{ display: displayMode === "bars" ? "block" : "none" }}
+        style={{ display: displayMode === "bars" ? "inline" : "none" }}
       />
       <div
         style={{
           display: displayMode === "boxes" ? "flex" : "none",
-          position: "relative",
-          alignItems: "flex-end",
-          flexWrap: "wrap",
-          padding: "15px 0"
         }}
-        ref={containerRef}
+        className="array-boxes-container"
       >
         {array.map((num, index) => {
           const pointer = pointers?.find((p) => p.index === index);

@@ -7,6 +7,7 @@ export class BinarySearchSnapshot<T> implements Snapshot<T> {
         // public array: T[],
         public value: T,
         public pointers: Pointers,
+        public extra: null,
         public label: string,
         public algorithmLine: number
         ) { }
@@ -37,7 +38,7 @@ export class BinarySearchEngine<T> extends SearchEngine<T> {
         let high = -1;
         let mid = -1;
         const quickAddRecord = (label: string, algorithmLine: number) => {
-            this.tracker.record(new BinarySearchSnapshot(value, {low: low, high: high, mid: mid}, label, algorithmLine));
+            this.tracker.record(new BinarySearchSnapshot(value, {low: low, high: high, mid: mid}, null, label, algorithmLine));
         }
         quickAddRecord(`Algorithm starts`, 0);
         low = 0;

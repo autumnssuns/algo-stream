@@ -1,8 +1,9 @@
 import React, { useEffect, useRef } from "react";
 import ArrayVisualiser from "../Components/ArrayVisualiser";
-import { LinearEngine, LinearSnapshot, Snapshot } from "../Engines/AlgorithmEngine";
+import { Extra, LinearEngine, LinearSnapshot, Snapshot } from "../Engines/AlgorithmEngine";
 import { getSyntaxClass } from "../Models/SyntaxFormat";
 import { Tracker } from "../Models/Utils";
+import '../Components/AlgorithmPlayer.css'
 
 export function useLinearPlayer(
     array: number[], 
@@ -23,6 +24,10 @@ export function useLinearPlayer(
     const [pseudocodeState, setPseudocodeState] = React.useState<string>("");
     const [highlightedCodeLine, setHighlightedCodeLine] = React.useState<number>(0);
     const [highlightedLabelLine, setHighlightedLabelLine] = React.useState<number>(0);
+    const [extraArraysState, setExtraArraysState] = React.useState<Extra | null>();
+    const [windowWidth, setWindowWidth] = React.useState(window.innerWidth);
+    window.addEventListener("resize", () => setWindowWidth(window.innerWidth));
+
     const labelDiv = React.useRef<HTMLDivElement>(null);
 
     // Update the array state when the slider value changes
@@ -30,7 +35,6 @@ export function useLinearPlayer(
         const snapshot = trackerState.getSnapshot(sliderValue) as LinearSnapshot<number>;
         if (snapshot) {
             const colors: {index: number, color: string}[] = [];
-            console.log(snapshot)
             cursorColorMap.forEach((color, index) => {
                 colors.push({
                     index: snapshot.pointers[index],
@@ -39,6 +43,7 @@ export function useLinearPlayer(
             });
             setPointerState(colors);
             if (snapshot.array) setArrayState(snapshot.array);
+            setExtraArraysState(snapshot.extra);
             setHighlightedCodeLine(snapshot.algorithmLine);
             setHighlightedLabelLine(sliderValue);
             // Scroll to the bottom of ref
@@ -70,8 +75,41 @@ export function useLinearPlayer(
         <ArrayVisualiser 
             array={arrayState} 
             pointers={pointerState} 
+            windowWidth={windowWidth}
             displayMode={displayMode}
         />
+        {
+            extraArraysState ? <h2>Extra Space</h2> : null
+        }
+        <div className="extra-space-container">
+            {
+                Object.keys(extraArraysState || {}).map((key, index) => {
+                    const extraArray = extraArraysState![key].array as [];
+                    console.log(key, extraArray)
+                    const extraPointers = Object.keys(extraArraysState![key].pointers).map((pointerKey) => {
+                        return {
+                            index: extraArraysState![key].pointers[pointerKey],
+                            color: cursorColorMap.get(pointerKey) || "black"
+                        }
+                    });
+
+                    return (
+                        <div key={index}
+                        className="extra-space-group"
+                        >
+                            <h2>{key}</h2>
+                            <ArrayVisualiser 
+                                array={extraArray}
+                                pointers={extraPointers}
+                                windowWidth={windowWidth / arrayState.length * extraArray.length}
+                                displayMode={displayMode}
+                                overrideMinMax={[Math.min(...array), Math.max(...array)]}
+                            />
+                        </div>
+                    )
+                })
+            }
+        </div>
         <button onClick={startButtonHandle} ref={startButton}
         >Start</button>
         <input type="range" min="0" 

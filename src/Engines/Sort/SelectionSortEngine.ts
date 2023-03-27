@@ -6,6 +6,7 @@ export class SelectionSortSnapshot<T> implements Snapshot<T> {
     constructor(
         public array: T[], 
         public pointers: Pointers, 
+        public extra: null,
         public label: string,
         public algorithmLine: number
         ) { }
@@ -21,7 +22,7 @@ export class SelectionSortEngine<T> extends SortEngine<T> {
         let i: number;
         let j: number;
         const quickAddRecord = (label: string, algorithmLine: number) => {
-            this.tracker.record(new SelectionSortSnapshot([...array], {min: minIndex, position: i, index: j}, label, algorithmLine));
+            this.tracker.record(new SelectionSortSnapshot([...array], {min: minIndex, position: i, index: j}, null, label, algorithmLine));
         }
         quickAddRecord(`Algorithm starts`, 0);
         for (i = 0; i < array.length - 1; i++) {

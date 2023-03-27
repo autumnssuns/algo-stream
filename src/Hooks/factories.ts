@@ -1,3 +1,4 @@
+import { MergeSortEngine, MergeSortSnapshot } from './../Engines/Sort/MergeSortEngine';
 import { SelectionSortEngine, SelectionSortSnapshot } from './../Engines/Sort/SelectionSortEngine';
 import { BubbleSortEngine } from './../Engines/Sort/BubbleSortEngine';
 import { Tracker } from "../Models/Utils";
@@ -59,6 +60,14 @@ export function createSortEngine<T>(type: string, compare: (a: T, b: T) => numbe
             cursorColorMap.set("index", "red");
             cursorColorMap.set("insert", "blue");
             cursorColorMap.set("key", "black");
+            break;
+        case "merge":
+            tracker = new Tracker<MergeSortSnapshot<T>>();
+            engine = new MergeSortEngine<T>(tracker, compare);
+            cursorColorMap.set("left", "red");
+            cursorColorMap.set("right", "blue");
+            cursorColorMap.set("merge", "purple");
+            cursorColorMap.set("mid", "black");
             break;
         default:
             tracker = new Tracker<InsertionSortSnapshot<T>>();

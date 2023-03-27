@@ -1,5 +1,5 @@
 import { Tracker } from "../../Models/Utils";
-import { Pointers, Snapshot } from "../AlgorithmEngine";
+import { Extra, Pointers, Snapshot } from "../AlgorithmEngine";
 import { SortEngine } from "./SortEngine";
 
 
@@ -7,6 +7,7 @@ export class BubbleSortSnapshot<T> implements Snapshot<T> {
     constructor(
         public array: T[],
         public pointers: Pointers, 
+        public extra: null,
         public label: string,
         public algorithmLine: number
         ) { }
@@ -19,7 +20,7 @@ export class BubbleSortEngine<T> extends SortEngine<T> {
 
     sort(array: T[]): void {
         const quickAddRecord = (label: string, algorithmLine: number, current: number, next: number) => {
-            this.tracker.record(new BubbleSortSnapshot([...array], {current: current, next: next}, label, algorithmLine));
+            this.tracker.record(new BubbleSortSnapshot([...array], {current: current, next: next}, null, label, algorithmLine));
         }
         // double for loop
         quickAddRecord(`Algorithm starts`, 0, -1, -1);

@@ -1,11 +1,12 @@
 import { Tracker } from "../../Models/Utils";
-import { Pointers, Snapshot } from "../AlgorithmEngine";
+import { Extra, Pointers, Snapshot } from "../AlgorithmEngine";
 import { SortEngine } from "./SortEngine";
 
 export class InsertionSortSnapshot<T> implements Snapshot<T> {
     constructor(
         public array: T[],
         public pointers: Pointers, 
+        public extra: Extra | null,
         public label: string,
         public algorithmLine: number
         ) { }
@@ -19,12 +20,12 @@ export class InsertionSortEngine<T> extends SortEngine<T> {
     sort(array: T[]): void {
         let i: number;
         let j: number;
-        let key: T;
+        let key: T | undefined;
         const quickAddRecord = (label: string, algorithmLine: number) => {
-            if (key !== undefined && !this.tracker.isComplete) {
-                this.tracker.record(new InsertionSortSnapshot([...array, key], {index: i, insert: j, key: array.length}, label, algorithmLine));
+            if (key !== undefined) {
+                this.tracker.record(new InsertionSortSnapshot([...array], {index: i, insert: j, key: array.length}, {key: {array: [key], pointers: {key: 0}}}, label, algorithmLine));
             } else {
-                this.tracker.record(new InsertionSortSnapshot([...array], {index: i, insert: j}, label, algorithmLine));
+                this.tracker.record(new InsertionSortSnapshot([...array], {index: i, insert: j}, {}, label, algorithmLine));
             }
         }
         quickAddRecord(`Algorithm starts`, 0)
@@ -46,6 +47,7 @@ export class InsertionSortEngine<T> extends SortEngine<T> {
             quickAddRecord(`False. Insert ${key} into index ${j}`, 7);
         }
         this.tracker.isComplete = true;
+        key = undefined;
         quickAddRecord(`Algorithm ends`, 8);
     }
 

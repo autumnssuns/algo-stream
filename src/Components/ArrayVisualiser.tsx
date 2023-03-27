@@ -41,7 +41,7 @@ const ArrayVisualiser: React.FC<ArrayVisualiserProps> = ({
         // from green (min) to red (max)
         const color = `hsl(${120 - (num - min) / (max - min + 1) * 120}, 100%, 50%)`;
 
-        const barHeight = num * unitHeight - 20;
+        const barHeight = num * unitHeight;
         const x = index * barWidth;
         const y = canvas.height - barHeight - 10;
 

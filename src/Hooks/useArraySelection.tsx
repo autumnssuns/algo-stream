@@ -1,27 +1,34 @@
 import { useState } from "react";
+import { Comparable } from "../Models/DataTypes";
 
-export function useArraySelection(){
-    let [array, setArray] = useState<any[]>([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+export function useArraySelection(initial: Comparable[], compare: (a: Comparable, b: Comparable) => number){
+    let [array, setArray] = useState<Comparable[]>(initial);
     let [displayMode, setDisplayMode] = useState<'boxes' | 'bars'>('bars');
     let [showButtons, setShowButtons] = useState(false);
-    let compare = (a: any, b: any) => {
-      if (a < b) {
-        return -1;
-      } else if (a > b) {
-        return 1;
-      } else {
-        return 0;
-      }
-    }
+    // let compare = (a: T, b: T) => {
+    //   if (a < b) {
+    //     return -1;
+    //   } else if (a > b) {
+    //     return 1;
+    //   } else {
+    //     return 0;
+    //   }
+    // }
 
     const arrayInboxChangeHandler = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
       setArray(prev => {
-        console.log(prev)
         // Should do nothing if previous array is the same as the new array
         if (prev.map((item) => item.toString().trim()).join(',') === e.target.value) {
           return prev;
         }
-        let arr = e.target.value.split(',').map((item) => item.trim());
+        let arr = e.target.value.split(',').map((item) => item.trim()).map((item) => {
+          // Check if item is a number
+          if (item.match(/^-?\d+\.?\d*$/)) {
+            return parseFloat(item);
+          } else {
+            return item;
+          }
+        });
         return arr;
       });
     }
@@ -56,13 +63,13 @@ export function useArraySelection(){
       </div>
       <button onClick={() => {
         setArray(prev => {
-          let arr = [...prev].sort((a, b) => a - b);
+          let arr = [...prev].sort((a, b) => compare(a, b));
           return arr;
         });
       }}>Sort Ascending</button>
       <button onClick={() => {
         setArray(prev => {
-          let arr = [...prev].sort((a, b) => b - a);
+          let arr = [...prev].reverse();
           return arr;
         });
       }}>Reverse</button>
@@ -71,7 +78,7 @@ export function useArraySelection(){
     const selectorJsx = (<div className="array-options-container">
     <div className='array-mode-container'>
           <label>Display Mode</label>
-          <select onChange={(e) => setDisplayMode(e.target.value as any)}>
+          <select onChange={(e) => setDisplayMode(e.target.value as 'boxes' | 'bars')}>
             <option value="bars">Bars</option>
             <option value="boxes">Boxes</option>
           </select>
@@ -87,5 +94,5 @@ export function useArraySelection(){
         </div>
     </div>)
 
-    return {array, compare, displayMode, selectorJsx}
+    return {array, displayMode, selectorJsx}
 }

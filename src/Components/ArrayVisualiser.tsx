@@ -1,12 +1,13 @@
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import "./ArrayVisualiser.css";
+import { Comparable } from "../Models/DataTypes";
 
 interface ArrayVisualiserProps {
-  array: number[];
+  array: Comparable[];
   pointers?: { index: number; color: string }[];
   windowWidth?: number;
   displayMode?: "bars" | "boxes";
-  overrideMinMax?: [number, number];
+  overrideMinMax?: [Comparable, Comparable];
   overrideWidth?: number;
 }
 
@@ -28,15 +29,24 @@ const ArrayVisualiser: React.FC<ArrayVisualiserProps> = ({
   };
 
   useEffect(() => {
+    setCanvasWidth(windowWidth);
+  }, [windowWidth]);
+
+  useEffect(() => {
     const element = containerRef.current;
     const computedStyle = window.getComputedStyle(element as Element);
     const padding = parseInt(computedStyle.paddingLeft) + parseInt(computedStyle.paddingRight);
     const maxWidth = (containerRef.current?.clientWidth ?? 0) - padding;
     setCanvasWidth(maxWidth)
-  }, [windowWidth, scrollbarVisible()]);
+  }, [scrollbarVisible()]);
 
   useEffect(() => {
     if (displayMode === "bars") {
+      // Only continue if the array is numeric
+      if (!array.every((num) => typeof num === "number")) {
+        return;
+      }
+      const numericArray = array as number[];
       const canvas = canvasRef.current;
       
       if (!canvas) {
@@ -49,19 +59,19 @@ const ArrayVisualiser: React.FC<ArrayVisualiserProps> = ({
       }
     // Clear the canvas
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      let min: number, max: number;
+      let min: Comparable, max: Comparable;
       if (overrideMinMax) {
         [min, max] = overrideMinMax;
       } else {
-        [min, max] = [Math.min(...array), Math.max(...array)];
+        [min, max] = [Math.min(...numericArray), Math.max(...numericArray)];
       }
-      const unitHeight = (canvas.height - 20) / (max - min + 1);
-      const barWidth = overrideWidth ?? canvas.width / array.length;
+      const unitHeight = (canvas.height - 20) / ((max as number) - (min as number) + 1);
+      const barWidth = overrideWidth ?? canvas.width / numericArray.length;
 
-      array.forEach((num, index) => {
+      numericArray.forEach((num, index) => {
         // Calculate color of bar, based on the number using hsl
         // from green (min) to red (max)
-        const color = `hsl(${120 - (num - min) / (max - min + 1) * 120}, 100%, 50%)`;
+        const color = `hsl(${120 - (num - (min as number)) / ((max as number) - (min as number) + 1) * 120}, 100%, 50%)`;
 
         const barHeight = num * unitHeight;
         const x = index * barWidth;
@@ -131,7 +141,7 @@ const ArrayVisualiser: React.FC<ArrayVisualiserProps> = ({
                 style={arrowStyle}
                 key={index}
               >
-                {num}
+                {num.toString()}
               </div>
             );
           } else {

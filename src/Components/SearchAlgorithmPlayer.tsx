@@ -2,11 +2,12 @@ import React, { useEffect, useRef } from "react";
 import "./AlgorithmPlayer.css";
 import { createSearchEngine } from "../Hooks/factories";
 import { useLinearPlayer } from "../Hooks/useLinearPlayer";
+import { Comparable } from "../Models/DataTypes";
 
 interface SearchAlgorithmPlayerProps {
-    array: number[];
-    compare: (a: number, b: number) => number;
-    searchKey: number;
+    array: Comparable[];
+    compare: (a: Comparable, b: Comparable) => number;
+    searchKey: Comparable;
     type: string;
     displayMode: 'bars' | 'boxes' 
 }

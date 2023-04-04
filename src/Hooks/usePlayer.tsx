@@ -32,45 +32,75 @@ export function usePlayer({ tracker }: Props) {
   });
 
   const explanationJsx = (
-    <div className="explanation-container">
-      <div className="labels-container" ref={labelDiv}>
-        {trackerState.log
-          .filter((log, index) => index <= sliderValue)
-          .map((log, index) => {
-            const highlightClass =
-              index === highlightedLabelLine ? "line-highlight" : "";
+    <div>
+      <input
+        type="range"
+        min="0"
+        max={maxSliderValue}
+        value={sliderValue}
+        onChange={(e) => setSliderValue(e.target.valueAsNumber)}
+        step="1"
+      />
+      <button
+        onClick={() =>
+          setSliderValue((prev) => {
+            if (prev === 0) return 0;
+            return prev - 1;
+          })
+        }
+      >
+        Previous
+      </button>
+      <button
+        onClick={() =>
+          setSliderValue((prev) => {
+            if (prev === maxSliderValue) return maxSliderValue;
+            return prev + 1;
+          })
+        }
+      >
+        Next
+      </button>
+      <div className="explanation-container">
+        <div className="labels-container" ref={labelDiv}>
+          {trackerState.log
+            .filter((log, index) => index <= sliderValue)
+            .map((log, index) => {
+              const highlightClass =
+                index === highlightedLabelLine ? "line-highlight" : "";
+              return (
+                <span key={index} className={`label ${highlightClass}`}>
+                  {log.label}
+                </span>
+              );
+            })}
+        </div>
+        <div className="pseudocode-container">
+          {pseudocodeState.split("\n").map((line, index) => {
+            let highlightClass =
+              index === highlightedCodeLine ? "line-highlight" : "";
+            // Get leading spaces
+            let leadingSpaces = line.match(/^\s*/);
+            if (leadingSpaces) {
+              line = line.replace(/^\s*/, "");
+            }
             return (
-              <span key={index} className={`label ${highlightClass}`}>
-                {log.label}
-              </span>
+              <div key={index} className={`pseudocode-line ${highlightClass}`}>
+                <span className="line-number">{index + 1}</span>
+                <span className="leading-spaces">{leadingSpaces}</span>
+                {line.split(" ").map((word, index) => {
+                  let syntaxClass = getSyntaxClass(word);
+                  return (
+                    <span key={index} className={syntaxClass}>
+                      {word}
+                      {index !== line.split(" ").length - 1 ? " " : ""}
+                    </span>
+                  );
+                })}
+              </div>
             );
           })}
-      </div>
-      <div className="pseudocode-container">
-        {pseudocodeState.split("\n").map((line, index) => {
-          let highlightClass =
-            index === highlightedCodeLine ? "line-highlight" : "";
-          // Get leading spaces
-          let leadingSpaces = line.match(/^\s*/);
-          if (leadingSpaces) {
-            line = line.replace(/^\s*/, "");
-          }
-          return (
-            <div key={index} className={`pseudocode-line ${highlightClass}`}>
-              <span className="line-number">{index + 1}</span>
-              <span className="leading-spaces">{leadingSpaces}</span>
-              {line.split(" ").map((word, index) => {
-                let syntaxClass = getSyntaxClass(word);
-                return (
-                  <span key={index} className={syntaxClass}>
-                    {word}
-                    {index !== line.split(" ").length - 1 ? " " : ""}
-                  </span>
-                );
-              })}
-            </div>
-          );
-        })}
+        </div>
       </div>
     </div>
   );

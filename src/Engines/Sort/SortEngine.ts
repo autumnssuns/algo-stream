@@ -1,5 +1,5 @@
 import { Tracker } from "../../Models/Utils";
-import { LinearEngine, Snapshot } from '../AlgorithmEngine';
+import { AlgorithmEngine, Snapshot } from '../AlgorithmEngine';
 
 // export interface SearchEngine<T> {
 //     search(array: T[], value: T): number;
@@ -7,7 +7,7 @@ import { LinearEngine, Snapshot } from '../AlgorithmEngine';
 //     compare: (a: T, b: T) => number;
 // }
 
-export abstract class SortEngine<T> implements LinearEngine<T>{
+export abstract class SortEngine<T> implements AlgorithmEngine{
     protected tracker: Tracker<Snapshot<T>>;
     protected compare: (a: T, b: T) => number;
     constructor(tracker: Tracker<Snapshot<T>>, compare: (a: T, b: T) => number) {

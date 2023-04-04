@@ -14,10 +14,19 @@ export class BinarySearchTree extends Graph<Comparable>{
         this.root = null;
     }
 
+    /**
+     * Creates the binary search tree from a node
+     * @param node The node to set as the root
+     */
+    public fromNode(node: BinaryTreeNode): BinarySearchTree{
+        this.root = node;
+        return this;
+    }
+
     public get nodes(): BinaryTreeNode[] {
         const nodes: BinaryTreeNode[] = [];
         /**
-         * Traverses the tree including the imaginary nodes
+         * Traverses the tree in pre-order including the imaginary nodes
          * @param node The node to traverse
          */
         const imaginaryTraversal = (node: BinaryTreeNode | null) => {
@@ -235,13 +244,10 @@ export class BinaryTreeNode implements GraphNode<Comparable>{
     public id: number = -1;
     public dummyLeft: BinaryTreeNode | null = null;
     public dummyRight: BinaryTreeNode | null = null;
+    public group: string = "node";
 
     get label(): string{
         return this.value.toString();
-    }
-
-    get group(): string{
-        return this.value.toString() === "" ? "invisible" : "node";
     }
 
     get neighbors(): (BinaryTreeNode | null)[]{
@@ -249,11 +255,13 @@ export class BinaryTreeNode implements GraphNode<Comparable>{
             if (this.dummyLeft === null){
                 this.dummyLeft = new BinaryTreeNode("");
             }
+            this.dummyLeft.group = "invisible";
             return [this.dummyLeft, this._neighbors[1]];
         } else if (this._neighbors[0] !== null && this._neighbors[1] === null){
             if (this.dummyRight === null){
                 this.dummyRight = new BinaryTreeNode("");
             }
+            this.dummyRight.group = "invisible";
             return [this._neighbors[0], this.dummyRight];
         } else {
             return this._neighbors;
@@ -279,5 +287,18 @@ export class BinaryTreeNode implements GraphNode<Comparable>{
 
     get right(): BinaryTreeNode | null{
         return this._neighbors[1];
+    }
+
+    public deepCopy(): BinaryTreeNode{
+        let result = new BinaryTreeNode(this.value);
+        result.id = this.id;
+        result.group = this.group;
+        if (this.left !== null){
+            result.left = this.left.deepCopy();
+        }
+        if (this.right !== null){
+            result.right = this.right.deepCopy();
+        }
+        return result;
     }
 }

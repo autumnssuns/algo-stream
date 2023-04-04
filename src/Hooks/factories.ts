@@ -2,15 +2,17 @@ import { MergeSortEngine, MergeSortSnapshot } from './../Engines/Sort/MergeSortE
 import { SelectionSortEngine, SelectionSortSnapshot } from './../Engines/Sort/SelectionSortEngine';
 import { BubbleSortEngine } from './../Engines/Sort/BubbleSortEngine';
 import { Tracker } from "../Models/Utils";
-import { LinearEngine, Snapshot } from "../Engines/AlgorithmEngine";
+import { AlgorithmEngine, Snapshot } from "../Engines/AlgorithmEngine";
 import { BinarySearchSnapshot, BinarySearchEngine } from "../Engines/Search/BinarySearchEngine";
 import { SequentialSearchSnapshot, SequentialSearchEngine } from "../Engines/Search/SequentialSearchEngine";
 import { BubbleSortSnapshot } from "../Engines/Sort/BubbleSortEngine";
 import { InsertionSortEngine, InsertionSortSnapshot } from '../Engines/Sort/InsertionSortEngine';
+import { Comparable } from '../Models/DataTypes';
+import { BinarySearchTreeInsertSnapshot, InsertEngine } from '../Engines/BinarySearchTree/InsertEngine';
 
 export function createSearchEngine<T>(type: string, compare: (a: T, b: T) => number) {
     let tracker: Tracker<Snapshot<T>>;
-    let engine: LinearEngine<T>;
+    let engine: AlgorithmEngine;
     let cursorColorMap: Map<string, string> = new Map<string, string>();
     switch(type){
         case "binary":
@@ -38,7 +40,7 @@ export function createSearchEngine<T>(type: string, compare: (a: T, b: T) => num
 
 export function createSortEngine<T>(type: string, compare: (a: T, b: T) => number) {
     let tracker: Tracker<Snapshot<T>>;
-    let engine: LinearEngine<T>;
+    let engine: AlgorithmEngine;
     let cursorColorMap: Map<string, string> = new Map<string, string>();
     switch(type){
         case "bubble":
@@ -79,5 +81,24 @@ export function createSortEngine<T>(type: string, compare: (a: T, b: T) => numbe
             cursorColorMap.set("key", "black");
             break;
         }
+    return { engine, tracker, cursorColorMap};
+}
+
+export function createBinarySearchTreeEngine(type: string){
+    let tracker: Tracker<BinarySearchTreeInsertSnapshot>;
+    let engine: AlgorithmEngine;
+    let cursorColorMap: Map<string, string> = new Map<string, string>();
+    switch(type){
+        case "insertion":
+            tracker = new Tracker<BinarySearchTreeInsertSnapshot>();
+            engine = new InsertEngine(tracker as Tracker<BinarySearchTreeInsertSnapshot>);
+            cursorColorMap.set("visited", "red");
+            break;
+        default:
+            tracker = new Tracker<BinarySearchTreeInsertSnapshot>();
+            engine = new InsertEngine(tracker as Tracker<BinarySearchTreeInsertSnapshot>);
+            cursorColorMap.set("visited", "red");
+            break;
+    }
     return { engine, tracker, cursorColorMap};
 }

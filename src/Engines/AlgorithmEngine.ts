@@ -1,4 +1,7 @@
-export interface LinearEngine<T> {
+import { BinarySearchTree } from "../Models/DataStructures/BinarySearchTree";
+import { Comparable } from "../Models/DataTypes";
+
+export interface AlgorithmEngine {
     run(...args: any[]): void;
     get pseudocode(): string;
 }
@@ -25,6 +28,16 @@ export abstract class LinearSnapshot<T> implements Snapshot<T> {
     constructor(
         public array: T[],
         public pointers: Pointers, 
+        public extra: Extra | null,
+        public label: string,
+        public algorithmLine: number
+        ) { }
+}
+
+export abstract class BinarySearchTreeSnapshot implements Snapshot<Comparable> {
+    constructor(
+        public binarySearchTree: BinarySearchTree,
+        public pointers: Pointers,
         public extra: Extra | null,
         public label: string,
         public algorithmLine: number

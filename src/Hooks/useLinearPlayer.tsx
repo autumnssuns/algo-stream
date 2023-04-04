@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import ArrayVisualiser from "../Components/ArrayVisualiser";
 import {
   Extra,
-  LinearEngine,
+  AlgorithmEngine,
   LinearSnapshot,
   Snapshot,
 } from "../Engines/AlgorithmEngine";
@@ -16,7 +16,7 @@ export function useLinearPlayer(
   array: Comparable[],
   displayMode: "bars" | "boxes",
   factory: () => {
-    engine: LinearEngine<number>;
+    engine: AlgorithmEngine;
     tracker: Tracker<Snapshot<number>>;
     cursorColorMap: Map<string, string>;
   }
@@ -142,34 +142,6 @@ export function useLinearPlayer(
       </div>
       <button onClick={startButtonHandle} ref={startButton}>
         Start
-      </button>
-      <input
-        type="range"
-        min="0"
-        max={maxSliderValue}
-        value={sliderValue}
-        onChange={(e) => setSliderValue(e.target.valueAsNumber)}
-        step="1"
-      />
-      <button
-        onClick={() =>
-          setSliderValue((prev) => {
-            if (prev === 0) return 0;
-            return prev - 1;
-          })
-        }
-      >
-        Previous
-      </button>
-      <button
-        onClick={() =>
-          setSliderValue((prev) => {
-            if (prev === maxSliderValue) return maxSliderValue;
-            return prev + 1;
-          })
-        }
-      >
-        Next
       </button>
       {explanationJsx}
     </div>

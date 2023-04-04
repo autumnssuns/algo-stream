@@ -1,5 +1,6 @@
 export class Tracker<T> {
   getSnapshot(index: number) {
+    console.log(this._log);
     return this._log[index];
   }
   private _log: T[] = [];

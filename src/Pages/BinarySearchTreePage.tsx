@@ -3,12 +3,18 @@ import { BinarySearchTree } from "../Models/DataStructures/BinarySearchTree";
 import { GraphVisualiser } from "../Components/GraphVisualiser";
 import { createBinarySearchTreeEngine } from "../Hooks/factories";
 import { usePlayer } from "../Hooks/usePlayer";
-import { BinarySearchTreeSnapshot } from "../Engines/AlgorithmEngine";
+import { AlgorithmEngine, BinarySearchTreeSnapshot } from "../Engines/AlgorithmEngine";
 import { BinarySearchTreeInsertSnapshot } from "../Engines/BinarySearchTree/InsertEngine";
+import { Tracker } from "../Models/Utils";
 
-export function BinarySearchTreePage(){
+interface BinarySearchTreePageProps {
+  engine: AlgorithmEngine;
+  tracker: Tracker<BinarySearchTreeInsertSnapshot>;
+  cursorColorMap: Map<string, string>;
+}
+
+export function BinarySearchTreePage({engine, tracker, cursorColorMap}: BinarySearchTreePageProps) {
     const [ treeState, setTreeState] = useState(new BinarySearchTree());
-    const { engine, tracker, cursorColorMap } = createBinarySearchTreeEngine("insertion");
 
     const {
         sliderValue,
@@ -24,13 +30,16 @@ export function BinarySearchTreePage(){
       });
 
     useEffect(() => {
-        setTreeState((prev) => {
-            engine.run(prev, 50);
-            console.log(tracker)
-            return (tracker.getSnapshot(tracker.size - 1) as BinarySearchTreeInsertSnapshot).binarySearchTree;
-        })
+        engine.run(treeState, 50);
+        setTrackerState(tracker);
+        setMaxSliderValue(tracker.size - 1);
+        setPseudocodeState(engine.pseudocode);
     }, [])
-  
+
+    useEffect(() => {
+        setMaxSliderValue(tracker.size - 1);
+    }, [tracker.isComplete])
+
     useEffect(() => {
         const snapshot = tracker.getSnapshot(sliderValue) as BinarySearchTreeSnapshot;
         if (snapshot) {
@@ -54,7 +63,8 @@ export function BinarySearchTreePage(){
                 const value = input.value;
                 if (value) {
                   setTreeState((prev) => {
-                    engine.run(prev, parseInt(value));
+                    const copy = new BinarySearchTree().fromNode(prev.root!.deepCopy(true));
+                    engine.run(copy, parseInt(value));
                     console.log(tracker)
                     return (tracker.getSnapshot(tracker.size - 1) as BinarySearchTreeInsertSnapshot).binarySearchTree;
                   })

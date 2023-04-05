@@ -45,7 +45,7 @@ export const GraphVisualiser: React.FC<GraphVisualiserProps> = ({tree}) =>  {
       };
     const style = {
         width: '100%',
-        height: '800px',
+        height: '400px',
         border: '1px solid lightgray'
     };
     const nodes = data.nodes;

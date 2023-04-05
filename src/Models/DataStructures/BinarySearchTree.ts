@@ -289,15 +289,19 @@ export class BinaryTreeNode implements GraphNode<Comparable>{
         return this._neighbors[1];
     }
 
-    public deepCopy(): BinaryTreeNode{
+    public deepCopy(removeVisited: boolean = false): BinaryTreeNode{
         let result = new BinaryTreeNode(this.value);
         result.id = this.id;
-        result.group = this.group;
+        if (removeVisited && this.group === "visited"){
+            result.group = "node";
+        } else {
+            result.group = this.group;
+        }
         if (this.left !== null){
-            result.left = this.left.deepCopy();
+            result.left = this.left.deepCopy(removeVisited);
         }
         if (this.right !== null){
-            result.right = this.right.deepCopy();
+            result.right = this.right.deepCopy(removeVisited);
         }
         return result;
     }

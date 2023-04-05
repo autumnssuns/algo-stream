@@ -29,7 +29,11 @@ export function usePlayer({ tracker }: Props) {
         labelDiv.current.scrollTop = labelDiv.current.scrollHeight;
       }
     }
-  });
+  }, [sliderValue, trackerState]);
+
+  useEffect(() => {
+    setMaxSliderValue(trackerState.size - 1);
+  }, [trackerState.isComplete]);
 
   const explanationJsx = (
     <div>

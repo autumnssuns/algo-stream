@@ -20,8 +20,9 @@ export class InsertEngine implements AlgorithmEngine {
     }
 
     run(binarySearchTree: BinarySearchTree, value: Comparable): void {
+        this.tracker.isComplete = false;
         this.insert(value, binarySearchTree.root);
-        // console.log(this.tracker);
+        this.tracker.isComplete = true;
     }
 
     private compare(a: Comparable, b: Comparable): number {

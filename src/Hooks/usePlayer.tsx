@@ -33,7 +33,13 @@ export function usePlayer({ tracker }: Props) {
 
   useEffect(() => {
     setMaxSliderValue(trackerState.size - 1);
-  }, [trackerState.isComplete]);
+    const interval = setInterval(() => {
+      if (sliderValue < trackerState.size - 1) {
+        setSliderValue((prev) => prev + 1);
+      }
+    }, 1);
+    return () => clearInterval(interval);
+  }, [...[trackerState.size]]);
 
   const explanationJsx = (
     <div>

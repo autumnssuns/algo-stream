@@ -30,7 +30,6 @@ export function BinarySearchTreePage({engine, tracker, cursorColorMap}: BinarySe
       });
 
     useEffect(() => {
-        engine.run(treeState, 50);
         setTrackerState(tracker);
         setMaxSliderValue(tracker.size - 1);
         setPseudocodeState(engine.pseudocode);
@@ -63,7 +62,8 @@ export function BinarySearchTreePage({engine, tracker, cursorColorMap}: BinarySe
                 const value = input.value;
                 if (value) {
                   setTreeState((prev) => {
-                    const copy = new BinarySearchTree().fromNode(prev.root!.deepCopy(true));
+                    const rootCopy = prev.root ? prev.root.deepCopy(["visited", "current"]) : null;
+                    const copy = new BinarySearchTree().fromNode(rootCopy);
                     engine.run(copy, parseInt(value));
                     console.log(tracker)
                     return (tracker.getSnapshot(tracker.size - 1) as BinarySearchTreeInsertSnapshot).binarySearchTree;

@@ -21,6 +21,13 @@ export class InsertEngine implements AlgorithmEngine {
 
     run(binarySearchTree: BinarySearchTree, value: Comparable): void {
         this.tracker.isComplete = false;
+        this.tracker.record(new BinarySearchTreeInsertSnapshot(
+            new BinarySearchTree().fromNode(binarySearchTree.root === null ? null : binarySearchTree.root.deepCopy(["visited", "current"])),
+            { node: 0 },
+            null,
+            `Try to insert ${value}`,
+            0
+        ));
         this.insert(value, binarySearchTree.root);
         this.tracker.isComplete = true;
     }
@@ -35,43 +42,98 @@ export class InsertEngine implements AlgorithmEngine {
         }
     }
 
+    private findRoot(node: BinaryTreeNode | null): BinaryTreeNode | null {
+        if (node === null) {
+            return null;
+        }
+        if (node.parent === null) {
+            return node;
+        }
+        return this.findRoot(node.parent);
+    }
+
     private insert(value: Comparable, node: BinaryTreeNode | null): void {
-        console.log(this.tracker);
+        const root = this.findRoot(node);
+        if (node !== null) {
+            node.group = "visited"
+        }
         if (node === null) {
             // Create a new node
-            node = new BinaryTreeNode(value);
             this.tracker.record(new BinarySearchTreeInsertSnapshot(
-                new BinarySearchTree().fromNode(node.deepCopy()),
+                root === null ? new BinarySearchTree().fromNode(node) : new BinarySearchTree().fromNode(root.deepCopy(["visited", "current"])),
                 { node: 0 },
                 null,
-                `Create a new node with value ${value}`,
-                1
+                `Empty node found.`,
+                2
+            ));
+            node = new BinaryTreeNode(value);
+            this.tracker.record(new BinarySearchTreeInsertSnapshot(
+                root === null ? new BinarySearchTree().fromNode(node) : new BinarySearchTree().fromNode(root.deepCopy(["visited", "current"])),
+                { node: 0 },
+                null,
+                `Inserted new node`,
+                3
             ));
             return;
         }
-        node.group = "visited";
         if (this.compare(value, node.value) < 0) {
-            // Insert into left subtree
-            this.insert(value, node.left);
-            node.left = this.tracker.getSnapshot(this.tracker.size - 1).binarySearchTree.root;
-            this.tracker.record(new BinarySearchTreeInsertSnapshot(
-                new BinarySearchTree().fromNode(node.deepCopy()),
-                { node: 0 },
-                null,
-                `Insert into left subtree`,
-                2
-            ));
+            if (node.left === null){
+                // Create a new node
+                this.tracker.record(new BinarySearchTreeInsertSnapshot(
+                    new BinarySearchTree().fromNode(root!.deepCopy()),
+                    { node: 0 },
+                    null,
+                    `Try to insert into left node`,
+                    1
+                ));
+                node.left = new BinaryTreeNode(value);
+                this.tracker.record(new BinarySearchTreeInsertSnapshot(
+                    new BinarySearchTree().fromNode(root!.deepCopy()),
+                    { node: 0 },
+                    null,
+                    `Inserted into left node`,
+                    3
+                ));
+            } else {
+                node.left.group = "current";
+                this.tracker.record(new BinarySearchTreeInsertSnapshot(
+                    new BinarySearchTree().fromNode(root!.deepCopy()),
+                    { node: 0 },
+                    null,
+                    `Cannot insert, move down to left subtree`,
+                    3
+                ));
+                this.insert(value, node.left);
+            }
         } else {
-            // Insert into right subtree
-            this.insert(value, node.right);
-            node.right = this.tracker.getSnapshot(this.tracker.size - 1).binarySearchTree.root;
-            this.tracker.record(new BinarySearchTreeInsertSnapshot(
-                new BinarySearchTree().fromNode(node.deepCopy()),
-                { node: 0 },
-                null,
-                `Insert into right subtree`,
-                3
-            ));
+            if (node.right === null){
+                // Create a new node
+                this.tracker.record(new BinarySearchTreeInsertSnapshot(
+                    new BinarySearchTree().fromNode(root!.deepCopy()),
+                    { node: 0 },
+                    null,
+                    `Try to insert into right node`,
+                    1
+                ));
+                node.right = new BinaryTreeNode(value);
+                this.tracker.record(new BinarySearchTreeInsertSnapshot(
+                    new BinarySearchTree().fromNode(root!.deepCopy()),
+                    { node: 0 },
+                    null,
+                    `Inserted into right node`,
+                    3
+                ));
+            } else {
+                node.right.group = "current";
+                this.tracker.record(new BinarySearchTreeInsertSnapshot(
+                    new BinarySearchTree().fromNode(root!.deepCopy()),
+                    { node: 0 },
+                    null,
+                    `Cannot insert, move down to right subtree`,
+                    3
+                ));
+                this.insert(value, node.right);
+            }
         }
     }
 

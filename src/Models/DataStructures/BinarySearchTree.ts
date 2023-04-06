@@ -18,7 +18,7 @@ export class BinarySearchTree extends Graph<Comparable>{
      * Creates the binary search tree from a node
      * @param node The node to set as the root
      */
-    public fromNode(node: BinaryTreeNode): BinarySearchTree{
+    public fromNode(node: BinaryTreeNode | null): BinarySearchTree{
         this.root = node;
         return this;
     }
@@ -245,6 +245,7 @@ export class BinaryTreeNode implements GraphNode<Comparable>{
     public dummyLeft: BinaryTreeNode | null = null;
     public dummyRight: BinaryTreeNode | null = null;
     public group: string = "node";
+    public parent: BinaryTreeNode | null = null;
 
     get label(): string{
         return this.value.toString();
@@ -254,12 +255,14 @@ export class BinaryTreeNode implements GraphNode<Comparable>{
         if (this._neighbors[0] === null && this._neighbors[1] !== null){
             if (this.dummyLeft === null){
                 this.dummyLeft = new BinaryTreeNode("");
+                this.dummyLeft.parent = this;
             }
             this.dummyLeft.group = "invisible";
             return [this.dummyLeft, this._neighbors[1]];
         } else if (this._neighbors[0] !== null && this._neighbors[1] === null){
             if (this.dummyRight === null){
                 this.dummyRight = new BinaryTreeNode("");
+                this.dummyRight.parent = this;
             }
             this.dummyRight.group = "invisible";
             return [this._neighbors[0], this.dummyRight];
@@ -275,6 +278,9 @@ export class BinaryTreeNode implements GraphNode<Comparable>{
 
     set left(value: BinaryTreeNode | null){
         this._neighbors[0] = value;
+        if (value !== null){
+            value.parent = this;
+        }
     }
 
     get left(): BinaryTreeNode | null{
@@ -283,25 +289,28 @@ export class BinaryTreeNode implements GraphNode<Comparable>{
 
     set right(value: BinaryTreeNode | null){
         this._neighbors[1] = value;
+        if (value !== null){
+            value.parent = this;
+        }
     }
 
     get right(): BinaryTreeNode | null{
         return this._neighbors[1];
     }
 
-    public deepCopy(removeVisited: boolean = false): BinaryTreeNode{
+    public deepCopy(removeGroups: string[] = []): BinaryTreeNode | null{
         let result = new BinaryTreeNode(this.value);
         result.id = this.id;
-        if (removeVisited && this.group === "visited"){
-            result.group = "node";
-        } else {
+        if (removeGroups.indexOf(this.group) === -1){
             result.group = this.group;
+        } else {
+            result.group = "node";
         }
         if (this.left !== null){
-            result.left = this.left.deepCopy(removeVisited);
+            result.left = this.left.deepCopy(removeGroups);
         }
         if (this.right !== null){
-            result.right = this.right.deepCopy(removeVisited);
+            result.right = this.right.deepCopy(removeGroups);
         }
         return result;
     }

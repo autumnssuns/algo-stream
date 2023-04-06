@@ -92,12 +92,12 @@ export function createBinarySearchTreeEngine(type: string){
         case "insertion":
             tracker = new Tracker<BinarySearchTreeInsertSnapshot>();
             engine = new InsertEngine(tracker as Tracker<BinarySearchTreeInsertSnapshot>);
-            cursorColorMap.set("visited", "red");
+            cursorColorMap.set("current", "red");
             break;
         default:
             tracker = new Tracker<BinarySearchTreeInsertSnapshot>();
             engine = new InsertEngine(tracker as Tracker<BinarySearchTreeInsertSnapshot>);
-            cursorColorMap.set("visited", "red");
+            cursorColorMap.set("current", "red");
             break;
     }
     return { engine, tracker, cursorColorMap};

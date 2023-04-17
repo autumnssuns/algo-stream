@@ -4,7 +4,7 @@ import { Comparable } from "../Models/DataTypes";
 
 interface ArrayVisualiserProps {
   array: Comparable[];
-  pointers?: { index: number; color: string }[];
+  pointers?: { index: number; color: string; label: string }[];
   windowWidth?: number;
   displayMode?: "bars" | "boxes";
   overrideMinMax?: [Comparable, Comparable];
@@ -130,6 +130,7 @@ const ArrayVisualiser: React.FC<ArrayVisualiserProps> = ({
           if (arrowClass) {
             arrowStyle = {
               "--arrow-color": pointer?.color,
+              "--label": `${pointer?.label}`,
             } as CSSProperties;
           }
 

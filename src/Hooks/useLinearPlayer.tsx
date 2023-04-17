@@ -23,7 +23,7 @@ export function useLinearPlayer(
 ) {
   const [arrayState, setArrayState] = React.useState(array);
   const [pointerState, setPointerState] = React.useState<
-    { index: number; color: string }[]
+    { index: number; color: string; label: string }[]
   >([]);
 
   const { engine, tracker, cursorColorMap } = factory();
@@ -52,11 +52,12 @@ export function useLinearPlayer(
       sliderValue
     ) as LinearSnapshot<number>;
     if (snapshot) {
-      const colors: { index: number; color: string }[] = [];
+      const colors: { index: number; color: string; label: string }[] = [];
       cursorColorMap.forEach((color, index) => {
         colors.push({
           index: snapshot.pointers[index],
           color: color,
+          label: index,
         });
       });
       setPointerState(colors);
@@ -107,6 +108,7 @@ export function useLinearPlayer(
                 return {
                   index: extraArraysState![key].pointers[pointerKey],
                   color: cursorColorMap.get(pointerKey) || "black",
+                  label: pointerKey,
                 };
               });
 

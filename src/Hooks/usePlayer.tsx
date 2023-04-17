@@ -31,15 +31,15 @@ export function usePlayer({ tracker }: Props) {
     }
   }, [sliderValue, trackerState]);
 
-  useEffect(() => {
-    setMaxSliderValue(trackerState.size - 1);
-    const interval = setInterval(() => {
-      if (sliderValue < trackerState.size - 1) {
-        setSliderValue((prev) => prev + 1);
-      }
-    }, 1);
-    return () => clearInterval(interval);
-  }, [...[trackerState.size]]);
+  // useEffect(() => {
+  //   setMaxSliderValue(trackerState.size - 1);
+  //   const interval = setInterval(() => {
+  //     if (sliderValue < trackerState.size - 1) {
+  //       setSliderValue((prev) => prev + 1);
+  //     }
+  //   }, 1);
+  //   return () => clearInterval(interval);
+  // }, [...[trackerState.size]]);
 
   const explanationJsx = (
     <div>

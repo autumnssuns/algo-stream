@@ -9,6 +9,7 @@ import { BubbleSortSnapshot } from "../Engines/Sort/BubbleSortEngine";
 import { InsertionSortEngine, InsertionSortSnapshot } from '../Engines/Sort/InsertionSortEngine';
 import { Comparable } from '../Models/DataTypes';
 import { BinarySearchTreeInsertSnapshot, InsertEngine } from '../Engines/BinarySearchTree/InsertEngine';
+import { QuickSortEngine, QuickSortSnapshot } from '../Engines/Sort/QuickSortEngine';
 
 export function createSearchEngine<T>(type: string, compare: (a: T, b: T) => number) {
     let tracker: Tracker<Snapshot<T>>;
@@ -72,6 +73,15 @@ export function createSortEngine<T>(type: string, compare: (a: T, b: T) => numbe
             cursorColorMap.set("j", "blue");
             cursorColorMap.set("merge", "purple");
             cursorColorMap.set("mid", "black");
+            break;
+        case "quick":
+            tracker = new Tracker<QuickSortSnapshot<T>>();
+            engine = new QuickSortEngine<T>(tracker, compare);
+            cursorColorMap.set("left", "red");
+            cursorColorMap.set("right", "blue");
+            cursorColorMap.set("pivot", "purple");
+            cursorColorMap.set("i", "black");
+            cursorColorMap.set("j", "green");
             break;
         default:
             tracker = new Tracker<InsertionSortSnapshot<T>>();
